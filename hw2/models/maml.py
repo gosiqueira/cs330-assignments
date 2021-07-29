@@ -1,6 +1,7 @@
 import numpy as np
 import sys
-import tensorflow as tf
+import tensorflow.compat.v1 as tf
+tf.disable_v2_behavior()
 
 from tensorflow.python.platform import flags
 from utils import xent, conv_block
@@ -49,6 +50,10 @@ class MAML:
 				# inner training loop
 				self.weights = weights = self.construct_weights()
 
+			if FLAGS.learn_inner_update_lr:
+				self.inner_update_lr = [{k: tf.Variable(tf.random_normal(v.shape), name=k + '_ilr')
+										for k, v in self.weights.items()} for _ in range(num_inner_updates)]
+
 
 			def task_inner_loop(inp, reuse=True):
 				"""
@@ -92,7 +97,7 @@ class MAML:
 					gradients = tf.gradients(inner_task_lossa, list(self.weights.values()))
 
 					self.weights = {k: tf.math.subtract(v, tf.math.multiply(gradients[i],
-						self.inner_update_lr[step][k])) for i, (k, v) in enumerate(self.weights.items())}
+									self.inner_update_lr[step][k])) for i, (k, v) in enumerate(self.weights.items())}
 
 					task_outputb = self.forward(inputb, self.weights, reuse, scope='b')
 					task_lossb = self.loss_func(task_outputb, labelb)
@@ -144,8 +149,8 @@ class MAML:
 		weights = {}
 
 		dtype = tf.float32
-		conv_initializer =  tf.contrib.layers.xavier_initializer_conv2d(dtype=dtype)
-		fc_initializer =  tf.contrib.layers.xavier_initializer(dtype=dtype)
+		conv_initializer =  tf.truncated_normal_initializer(stddev=0.1, dtype=dtype)
+		fc_initializer =  tf.truncated_normal_initializer(stddev=0.1, dtype=dtype)
 		k = 3
 
 		weights['conv1'] = tf.get_variable('conv1', [k, k, self.channels, self.dim_hidden], initializer=conv_initializer, dtype=dtype)

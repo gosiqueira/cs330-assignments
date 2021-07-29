@@ -10,7 +10,8 @@ import csv
 import numpy as np
 import pickle
 import random
-import tensorflow as tf
+import tensorflow.compat.v1 as tf
+tf.disable_v2_behavior()
 
 from load_data import DataGenerator
 from models.maml import MAML

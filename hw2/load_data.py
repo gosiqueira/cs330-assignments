@@ -2,7 +2,7 @@ import numpy as np
 import os
 import random
 import tensorflow as tf
-from scipy import misc
+from imageio import imread
 
 
 def get_images(paths, labels, nb_samples=None, shuffle=True):
@@ -37,7 +37,7 @@ def image_file_to_array(filename, dim_input):
 	Returns:
 		1 channel image
 	"""
-	image = misc.imread(filename)
+	image = imread(filename)
 	image = image.reshape([dim_input])
 	image = image.astype(np.float32) / 255.0
 	image = 1.0 - image

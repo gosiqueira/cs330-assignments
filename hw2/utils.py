@@ -2,10 +2,10 @@
 import numpy as np
 import os
 import random
-import tensorflow as tf
+import tensorflow.compat.v1 as tf
+tf.disable_v2_behavior()
 
 from tensorflow.python.platform import flags
-from tensorflow.contrib.layers.python import layers as tf_layers
 
 FLAGS = flags.FLAGS
 
@@ -15,7 +15,9 @@ def conv_block(inp, cweight, bweight, reuse, scope, activation=tf.nn.relu, resid
     stride, no_stride = [1,2,2,1], [1,1,1,1]
 
     conv_output = tf.nn.conv2d(inp, cweight, no_stride, 'SAME') + bweight
-    normed = tf_layers.batch_norm(conv_output, activation_fn=activation, reuse=reuse, scope=scope)
+    normed = tf.layers.batch_normalization(conv_output, reuse=reuse, name=scope)
+    if activation is not None:
+        normed = activation(normed)
     return normed
 
 ## Loss functions

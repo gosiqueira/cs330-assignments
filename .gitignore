@@ -133,3 +133,6 @@ dmypy.json
 
 # Datasets
 omniglot_resized/
+
+# Tensorboard logs
+logs/

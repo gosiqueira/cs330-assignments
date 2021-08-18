@@ -1,6 +1,7 @@
-import numpy as np
 import os
 import random
+
+import numpy as np
 import tensorflow as tf
 from imageio import imread
 
@@ -91,6 +92,7 @@ class DataGenerator(object):
 		Samples a batch for training, validation, or testing
 		Args:
 			batch_type: meta_train/meta_val/meta_test
+			batch_size: number of images to sample
 			shuffle: randomly shuffle classes or not
 			swap: swap number of classes (N) and number of samples per class (K) or not
 		Returns:

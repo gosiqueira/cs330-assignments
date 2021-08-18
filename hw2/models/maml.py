@@ -97,7 +97,7 @@ class MAML:
 					gradients = tf.gradients(inner_task_lossa, list(self.weights.values()))
 
 					self.weights = {k: tf.math.subtract(v, tf.math.multiply(gradients[i],
-									self.inner_update_lr[step][k])) for i, (k, v) in enumerate(self.weights.items())}
+									self.inner_update_lr)) for i, (k, v) in enumerate(self.weights.items())}
 
 					task_outputb = self.forward(inputb, self.weights, reuse, scope='b')
 					task_lossb = self.loss_func(task_outputb, labelb)
